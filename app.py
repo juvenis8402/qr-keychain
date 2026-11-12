@@ -8,6 +8,7 @@ app.py — генератор брелоков с QR.
 """
 import os
 import sys
+import webbrowser
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
@@ -20,6 +21,13 @@ import qrgen
 
 COLOUR_BG = "#f4f4f4"
 COLOUR_DARK = "#111111"
+COLOUR_LINK = "#1a4f9c"
+
+# Те же ссылки, что в шапке генератора абажуров
+LINKS = (
+    ("✈ 3D PrintIt в Telegram", "https://t.me/PrintIt3D"),
+    ("▶ Моя мастерская в YouTube", "https://www.youtube.com/@Lelis-IL"),
+)
 
 
 class App(tk.Tk):
@@ -79,6 +87,16 @@ class App(tk.Tk):
         self.btn_stl.pack(side="left", padx=8)
         tk.Button(bottom, text="Закрыть", width=10,
                   command=self.destroy).pack(side="right")
+
+        footer = tk.Frame(self, padx=12)
+        footer.pack(fill="x", pady=(0, 10))
+        for i, (label, url) in enumerate(LINKS):
+            link = tk.Label(footer, text=label, font=("Segoe UI", 9, "underline"),
+                            fg=COLOUR_LINK, cursor="hand2")
+            link.pack(side="left", padx=0 if i == 0 else 18)
+            link.bind("<Button-1>", lambda e, u=url: webbrowser.open_new_tab(u))
+            link.bind("<Enter>", lambda e, w=link: w.config(fg="#0b2f66"))
+            link.bind("<Leave>", lambda e, w=link: w.config(fg=COLOUR_LINK))
 
     def refresh(self):
         text = self.text_var.get().strip()
